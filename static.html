@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloud Computing Portfolio</title>
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#0f172a;
+      color:white;
+    }
+
+    nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:20px 80px;
+      background:#111827;
+      position:sticky;
+      top:0;
+    }
+
+    nav h1{
+      color:#38bdf8;
+    }
+
+    nav ul{
+      display:flex;
+      list-style:none;
+      gap:25px;
+    }
+
+    nav ul li{
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    nav ul li:hover{
+      color:#38bdf8;
+    }
+
+    .hero{
+      height:90vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      text-align:center;
+      padding:20px;
+    }
+
+    .hero h2{
+      font-size:60px;
+      margin-bottom:20px;
+    }
+
+    .hero p{
+      width:60%;
+      color:#cbd5e1;
+      line-height:1.8;
+      margin-bottom:30px;
+    }
+
+    .btn{
+      padding:14px 30px;
+      border:none;
+      background:#38bdf8;
+      color:black;
+      font-weight:bold;
+      border-radius:8px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      transform:scale(1.05);
+    }
+
+    .services{
+      padding:80px;
+      text-align:center;
+    }
+
+    .services h2{
+      margin-bottom:50px;
+      font-size:40px;
+    }
+
+    .cards{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+      gap:30px;
+    }
+
+    .card{
+      background:#1e293b;
+      padding:30px;
+      border-radius:15px;
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-10px);
+      background:#334155;
+    }
+
+    .card h3{
+      margin-bottom:15px;
+      color:#38bdf8;
+    }
+
+    footer{
+      text-align:center;
+      padding:20px;
+      background:#111827;
+      margin-top:50px;
+      color:#94a3b8;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <h1>CloudX</h1>
+
+    <ul>
+      <li>Home</li>
+      <li>Services</li>
+      <li>Projects</li>
+      <li>Contact</li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+
+    <h2>Static Website Hosting on AWS</h2>
+
+    <p>
+      This website is hosted on an AWS EC2 instance using Apache HTTP Server.
+      It demonstrates static website deployment using HTML, CSS, and JavaScript
+      for cloud computing practical examination.
+    </p>
+
+    <button class="btn" onclick="showMessage()">
+      Explore More
+    </button>
+
+  </section>
+
+  <section class="services">
+
+    <h2>Our Services</h2>
+
+    <div class="cards">
+
+      <div class="card">
+        <h3>Web Hosting</h3>
+        <p>
+          Deploy static and dynamic websites on cloud infrastructure.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Cloud Deployment</h3>
+        <p>
+          Host scalable applications using AWS cloud services.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>Database Integration</h3>
+        <p>
+          Connect applications with DynamoDB and cloud databases.
+        </p>
+      </div>
+
+    </div>
+
+  </section>
+
+  <footer>
+    © 2026 Cloud Computing Practical | Hosted on AWS EC2
+  </footer>
+
+  <script>
+
+    function showMessage(){
+
+      alert("Website Hosted Successfully on AWS EC2 🚀");
+    }
+
+  </script>
+
+</body>
+</html>
