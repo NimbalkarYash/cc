@@ -1,0 +1,56 @@
+# Connect to EC2 using EC2 Instance Connect
+# (done from AWS Console, not terminal)
+
+# ------------------------------------------------
+# Install Git
+# ------------------------------------------------
+sudo yum install git -y
+
+# ------------------------------------------------
+# Install Node.js
+# ------------------------------------------------
+curl -fsSL https://rpm.nodesource.com/setup_18.x | sudo bash -
+
+sudo yum install -y nodejs
+
+# Verify installation
+node -v
+npm -v
+
+# ------------------------------------------------
+# Clone GitHub Repository
+# ------------------------------------------------
+git clone https://github.com/NimbalkarYash/cc.git
+
+# ------------------------------------------------
+# Go inside project folder
+# ------------------------------------------------
+cd cc
+
+# ------------------------------------------------
+# Install dependencies
+# ------------------------------------------------
+npm install
+
+# ------------------------------------------------
+# Run the server
+# ------------------------------------------------
+node server.js
+
+# ------------------------------------------------
+# If port 3000 already in use
+# ------------------------------------------------
+lsof -i :3000
+
+# Kill existing process
+kill -9 PID
+
+# Start again
+node server.js
+
+
+#to gracefully terminate the instance
+ctrl + c
+
+#to update the files
+git pull
