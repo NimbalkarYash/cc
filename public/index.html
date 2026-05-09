@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- ============================================================
+    TO CHANGE TO EMPLOYEE SYSTEM:
+    1. Change <title> and <h1> below from "Student" to "Employee"
+    2. Change field labels/placeholders accordingly
+    3. That's it for the frontend!
+  ============================================================ -->
+  <title>Student Management System</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      padding: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      color: #1a202c;
+      font-size: 1.8rem;
+    }
+
+    .container {
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    /* ---- Form Card ---- */
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: #2d3748;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      margin-bottom: 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    input:focus { border-color: #4299e1; }
+
+    /* Hidden field used during update */
+    #editId { display: none; }
+
+    .btn-row { display: flex; gap: 10px; }
+
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    button:hover { opacity: 0.85; }
+
+    #addBtn    { background: #48bb78; color: white; }
+    #updateBtn { background: #ed8936; color: white; display: none; }
+    #cancelBtn { background: #a0aec0; color: white; display: none; }
+
+    /* ---- Records Table ---- */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    thead { background: #2b6cb0; color: white; }
+    th, td { padding: 12px 16px; text-align: left; font-size: 0.9rem; }
+    tbody tr:nth-child(even) { background: #f7fafc; }
+    tbody tr:hover { background: #ebf4ff; }
+
+    .action-btn {
+      padding: 6px 14px;
+      font-size: 0.8rem;
+      border-radius: 5px;
+      margin-right: 6px;
+    }
+
+    .edit-btn   { background: #4299e1; color: white; }
+    .delete-btn { background: #fc8181; color: white; }
+
+    #status {
+      text-align: center;
+      margin-bottom: 14px;
+      font-size: 0.9rem;
+      color: #2f855a;
+      min-height: 20px;
+    }
+
+    .empty-row td {
+      text-align: center;
+      color: #a0aec0;
+      padding: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🎓 Student Management System</h1>
+
+    <!-- ===== FORM SECTION ===== -->
+    <div class="card">
+      <h2>Add / Edit Student</h2>
+
+      <!-- Hidden: stores the ID of the student being edited -->
+      <input type="text" id="editId" placeholder="ID (auto)" readonly />
+
+      <input type="text" id="name"   placeholder="Student Name" />
+      <input type="text" id="course" placeholder="Course (e.g. BCA, MCA)" />
+      <input type="text" id="marks"  placeholder="Marks (e.g. 85)" />
+
+      <div class="btn-row">
+        <button id="addBtn"    onclick="addStudent()">➕ Add Student</button>
+        <button id="updateBtn" onclick="updateStudent()">✏️ Update</button>
+        <button id="cancelBtn" onclick="cancelEdit()">✖ Cancel</button>
+      </div>
+    </div>
+
+    <!-- ===== STATUS MESSAGE ===== -->
+    <div id="status"></div>
+
+    <!-- ===== RECORDS TABLE ===== -->
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Course</th>
+          <th>Marks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr class="empty-row"><td colspan="5">No records yet. Add a student above.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    // ============================================================
+    // API base URL — works for both local and EC2
+    // On EC2, this auto-resolves to the EC2 public IP
+    // ============================================================
+    const API = "/api/students";
+
+    // ---- Show a temporary status message ----
+    function showStatus(msg) {
+      const el = document.getElementById("status");
+      el.textContent = msg;
+      setTimeout(() => el.textContent = "", 3000);
+    }
+
+    // ---- Clear input fields ----
+    function clearForm() {
+      document.getElementById("editId").value  = "";
+      document.getElementById("name").value    = "";
+      document.getElementById("course").value  = "";
+      document.getElementById("marks").value   = "";
+    }
+
+    // ---- Switch to "Add" mode ----
+    function cancelEdit() {
+      clearForm();
+      document.getElementById("addBtn").style.display    = "inline-block";
+      document.getElementById("updateBtn").style.display = "none";
+      document.getElementById("cancelBtn").style.display = "none";
+    }
+
+    // ============================================================
+    // FETCH ALL STUDENTS (GET)
+    // ============================================================
+    async function loadStudents() {
+      const res  = await fetch(API);
+      const data = await res.json();
+      const body = document.getElementById("tableBody");
+
+      if (!data || data.length === 0) {
+        body.innerHTML = `<tr class="empty-row"><td colspan="5">No records found.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = data.map((s, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${s.name}</td>
+          <td>${s.course}</td>
+          <td>${s.marks}</td>
+          <td>
+            <button class="action-btn edit-btn"
+              onclick="fillEditForm('${s.studentID}', '${s.name}', '${s.course}', '${s.marks}')">
+              ✏️ Edit
+            </button>
+            <button class="action-btn delete-btn"
+              onclick="deleteStudent('${s.studentID}')">
+              🗑️ Delete
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    // ============================================================
+    // ADD STUDENT (POST)
+    // ============================================================
+    async function addStudent() {
+      const name   = document.getElementById("name").value.trim();
+      const course = document.getElementById("course").value.trim();
+      const marks  = document.getElementById("marks").value.trim();
+
+      if (!name || !course || !marks) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      await fetch(API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, course, marks }),
+      });
+
+      clearForm();
+      showStatus("✅ Student added successfully!");
+      loadStudents();
+    }
+
+    // ============================================================
+    // FILL FORM FOR EDITING
+    // ============================================================
+    function fillEditForm(id, name, course, marks) {
+      document.getElementById("editId").value  = id;
+      document.getElementById("name").value    = name;
+      document.getElementById("course").value  = course;
+      document.getElementById("marks").value   = marks;
+
+      document.getElementById("addBtn").style.display    = "none";
+      document.getElementById("updateBtn").style.display = "inline-block";
+      document.getElementById("cancelBtn").style.display = "inline-block";
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ============================================================
+    // UPDATE STUDENT (PUT)
+    // ============================================================
+    async function updateStudent() {
+      const id     = document.getElementById("editId").value;
+      const name   = document.getElementById("name").value.trim();
+      const course = document.getElementById("course").value.trim();
+      const marks  = document.getElementById("marks").value.trim();
+
+      if (!name || !course || !marks) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      await fetch(`${API}/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, course, marks }),
+      });
+
+      cancelEdit();
+      showStatus("✅ Student updated successfully!");
+      loadStudents();
+    }
+
+    // ============================================================
+    // DELETE STUDENT (DELETE)
+    // ============================================================
+    async function deleteStudent(id) {
+      if (!confirm("Are you sure you want to delete this record?")) return;
+
+      await fetch(`${API}/${id}`, { method: "DELETE" });
+      showStatus("🗑️ Student deleted.");
+      loadStudents();
+    }
+
+    // ---- Load records on page load ----
+    loadStudents();
+  </script>
+
+</body>
+</html>
