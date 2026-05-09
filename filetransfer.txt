@@ -1,0 +1,52 @@
+# =====================================================
+# INSTANCE 1 (Sender Instance)
+# =====================================================
+
+# Create a text file
+echo "Hello from Instance 1" > test.txt
+
+# Verify file
+cat test.txt
+
+# Start temporary Python HTTP server on port 8000
+python3 -m http.server 8000
+
+
+# =====================================================
+# SECURITY GROUP RULE (Instance 1)
+# =====================================================
+
+# Add inbound rule:
+# Type        : Custom TCP
+# Port        : 8000
+# Source      : 0.0.0.0/0
+
+
+# =====================================================
+# INSTANCE 2 (Receiver Instance)
+# =====================================================
+
+# Download file from Instance 1
+wget http://INSTANCE1_PUBLIC_IP:8000/test.txt
+
+# Verify downloaded file
+cat test.txt
+
+
+# =====================================================
+# INSTANCE 3 (Receiver Instance)
+# =====================================================
+
+# Download file from Instance 1
+wget http://INSTANCE1_PUBLIC_IP:8000/test.txt
+
+# Verify downloaded file
+cat test.txt
+
+
+# =====================================================
+# STOP PYTHON SERVER (Instance 1)
+# =====================================================
+
+# Press:
+CTRL + C
