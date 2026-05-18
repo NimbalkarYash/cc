@@ -1,23 +1,15 @@
-# Student CRUD App — Complete Setup & Deployment Guide
-# ======================================================
+
 # Works for: Student / Employee / Product Management Systems
 # Stack: HTML + CSS + Vanilla JS + Node.js + Express + DynamoDB
-# ======================================================
 
 
-## FOLDER STRUCTURE
-==================
-student-crud-app/
-├── server.js          ← Backend (Express + DynamoDB)
-├── package.json       ← Dependencies
-└── public/
-    └── index.html     ← Frontend (HTML + CSS + JS)
 
 
-## PART 1: AWS DYNAMODB SETUP (Do this first)
-==============================================
 
-### Step 1: Create DynamoDB Table
+
+
+
+Create DynamoDB Table
 1. Go to: https://console.aws.amazon.com/dynamodb
 2. Click "Create table"
 3. Table name:        Students        ← Change this per exam question
@@ -27,7 +19,7 @@ student-crud-app/
 7. Wait ~30 seconds for table to become Active
 
 
-### Step 2: Create IAM User for Credentials (Local Development)
+Create IAM User for Credentials (Local Development)
 1. Go to: https://console.aws.amazon.com/iam
 2. Click Users → Create user
 3. Username: crud-app-user (any name)
@@ -41,10 +33,9 @@ student-crud-app/
 11. SAVE the Access Key ID and Secret Access Key (you need these below)
 
 
-## PART 2: LOCAL SETUP
-=======================
 
-### Step 1: Install Node.js (if not installed)
+
+ Install Node.js (if not installed)
 Download from: https://nodejs.org  (LTS version)
 Verify: node --version
 
