@@ -29,3 +29,51 @@ app.get("/stats", (req, res) => {
 app.listen(3000, "0.0.0.0", () => {
   console.log("Server running on port 3000");
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+===== COMMANDS TO RUN ON EC2 =====
+ 
+sudo yum update -y
+sudo yum install nodejs npm -y
+ 
+mkdir server-monitor
+cd server-monitor
+mkdir public
+ 
+# paste server.js and public/index.html using nano
+ 
+npm init -y
+npm install express
+node server.js
+*/
