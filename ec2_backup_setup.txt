@@ -1,0 +1,91 @@
+1. Connect using EC2 Instance Connect
+Open EC2 Instance Connect terminal from AWS console.
+
+2. Update system
+sudo yum update -y
+
+3. Install rsync
+sudo yum install rsync -y
+
+Check:
+rsync --version
+
+4. Create folders
+mkdir -p /home/ec2-user/node_a
+mkdir -p /home/ec2-user/node_b
+
+Check:
+ls /home/ec2-user/
+
+5. Create test file
+echo "Test file" > /home/ec2-user/node_a/testfile.txt
+
+6. Create backup script
+nano /home/ec2-user/backup.sh
+
+Paste:
+
+#!/bin/bash
+
+SOURCE="/home/ec2-user/node_a/"
+DEST="/home/ec2-user/node_b/"
+LOG="/home/ec2-user/backup.log"
+
+echo "Backup started $(date)" >> "$LOG"
+
+rsync -avz --delete "$SOURCE" "$DEST" >> "$LOG" 2>&1
+
+echo "Backup completed $(date)" >> "$LOG"
+
+Save:
+CTRL + O
+Enter
+CTRL + X
+
+7. Make script executable
+chmod +x /home/ec2-user/backup.sh
+
+Run manually:
+/home/ec2-user/backup.sh
+
+Check backup:
+ls /home/ec2-user/node_b/
+
+Check log:
+cat /home/ec2-user/backup.log
+
+8. Automate using cron
+crontab -e
+
+Add:
+* * * * * /home/ec2-user/backup.sh
+
+Check cron:
+crontab -l
+
+9. Test automation
+echo "Second file" > /home/ec2-user/node_a/file2.txt
+
+Wait 1 minute.
+
+Check:
+ls /home/ec2-user/node_b/
+
+10. Test delete sync
+rm /home/ec2-user/node_a/testfile.txt
+
+Wait 1 minute.
+
+Check:
+ls /home/ec2-user/node_b/
+
+Useful commands
+
+Live logs:
+tail -f /home/ec2-user/backup.log
+
+Run backup manually:
+/home/ec2-user/backup.sh
+
+Check cron service:
+sudo systemctl status crond
